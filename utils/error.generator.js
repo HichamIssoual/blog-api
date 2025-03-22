@@ -10,4 +10,4 @@ class ErrorGenrator extends Error {
         return this;
     }
 }
-module.exports = ErrorGenrator;
+module.exports = new ErrorGenrator;
