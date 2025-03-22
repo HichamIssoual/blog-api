@@ -48,7 +48,14 @@ const register = asynHandler(async (req, res, next) => {
  * @method POST
  * @end_point "api/auth/login"
  ------------------------------------------*/
- 
+// check if data sending
+// find user by email
+// check if password is right using compare
+// generate token
+// return response user with user data
+const login = asynHandler(async (req, res, next) => {
+
+})
 module.exports = {
     register,
 }
