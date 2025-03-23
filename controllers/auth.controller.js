@@ -65,7 +65,7 @@ const login = asynHandler(async (req, res, next) => {
     const foundedUser = await Users.findOne({ email });
     const matchedPassword = await bcrypt.compare(password, foundedUser.password);
     if (!foundedUser || !matchedPassword) {
-        const err = ErrorGenrator.generate(404, FAIL, "email or password is wrong");
+        const err = ErrorGenrator.generate(401, FAIL, "email or password is wrong");
         return next(err);
     }
     // return response user with user data
