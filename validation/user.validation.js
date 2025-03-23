@@ -8,10 +8,6 @@ const registerValidation = (obj) => {
     })
     return schemaValidation.validate(obj);
 }
-const loginValidation = (obj) => {
-
-}
 module.exports = {
     registerValidation,
-    loginValidation,
 }

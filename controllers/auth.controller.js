@@ -4,7 +4,7 @@ const { registerValidation } = require("../validation/user.validation");
 const ErrorGenrator = require("../utils/error.generator");
 const { ERROR, FAIL, SUCCESS } = require("../utils/status.code.text");
 const Users = require("../model/Users");
-const { generateToken } = require("../utils/generate.token");
+// const { generateToken } = require("../utils/generate.token");
 /**----------------------------------------
  * @access public
  * @description register new user in database
@@ -53,14 +53,36 @@ const register = asynHandler(async (req, res, next) => {
  * @method POST
  * @end_point "api/auth/login"
  ------------------------------------------*/
-// check if data sending
-// find user by email
-// check if password is right using compare
 // generate token
-// return response user with user data
 const login = asynHandler(async (req, res, next) => {
+    // check if data sending
+    const { email, password } = req.body;
+    if (!email || !password) {
+        const err = ErrorGenrator.generate(400, FAIL, "email and password are required");
+        return next(err);
+    }
+    // check if user not in db and check if password is right using compare
+    const foundedUser = await Users.findOne({ email });
+    const matchedPassword = await bcrypt.compare(password, foundedUser.password);
+    if (!foundedUser || !matchedPassword) {
+        const err = ErrorGenrator.generate(404, FAIL, "email or password is wrong");
+        return next(err);
+    }
+    // return response user with user data
+    res.status(200).json({
+        status: SUCCESS,
+        data: {
+            user: {
+                id: foundedUser._id,
+                username: foundedUser.username,
+                email: foundedUser.email
+            }
+        },
+        message: "User has been Login successfully",
 
+    })
 })
 module.exports = {
     register,
+    login,
 }
