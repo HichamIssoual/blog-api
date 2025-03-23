@@ -4,7 +4,7 @@ const { registerValidation } = require("../validation/user.validation");
 const ErrorGenrator = require("../utils/error.generator");
 const { ERROR, FAIL, SUCCESS } = require("../utils/status.code.text");
 const Users = require("../model/Users");
-// const { generateToken } = require("../utils/generate.token");
+const { generateToken } = require("../utils/generate.token");
 /**----------------------------------------
  * @access public
  * @description register new user in database
@@ -34,6 +34,8 @@ const register = asynHandler(async (req, res, next) => {
     }
     const newUser = new Users(user);
     await newUser.save();
+    // @todo sending email (verify token)
+
     // return the response to client
     res.status(201).json({
         status: SUCCESS,
@@ -53,7 +55,7 @@ const register = asynHandler(async (req, res, next) => {
  * @method POST
  * @end_point "api/auth/login"
  ------------------------------------------*/
-// generate token
+
 const login = asynHandler(async (req, res, next) => {
     // check if data sending
     const { email, password } = req.body;
@@ -68,9 +70,17 @@ const login = asynHandler(async (req, res, next) => {
         const err = ErrorGenrator.generate(401, FAIL, "email or password is wrong");
         return next(err);
     }
+    // @todo sending email (verify token)
+
+    // generate token
+    const token = await generateToken({
+        id: foundedUser._id,
+        isAdmin: foundedUser.isAdmin
+    })
     // return response user with user data
     res.status(200).json({
         status: SUCCESS,
+        token: token,
         data: {
             user: {
                 id: foundedUser._id,
