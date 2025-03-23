@@ -4,6 +4,7 @@ const { registerValidation } = require("../validation/user.validation");
 const ErrorGenrator = require("../utils/error.generator");
 const { ERROR, FAIL, SUCCESS } = require("../utils/status.code.text");
 const Users = require("../model/Users");
+const { generateToken } = require("../utils/generate.token");
 /**----------------------------------------
  * @access public
  * @description register new user in database
@@ -21,7 +22,7 @@ const register = asynHandler(async (req, res, next) => {
     // check if user is not found in the database
     const findEmail = await Users.findOne({ email: req.body.email });
     if (findEmail) {
-        const err = ErrorGenrator.generate(400, FAIL, "An error occurred. Please try again later");
+        const err = ErrorGenrator.generate(409, FAIL, "An error occurred. Please try again later");
         return next(err);
     }
     // hashing the passowrd
@@ -37,9 +38,13 @@ const register = asynHandler(async (req, res, next) => {
     res.status(201).json({
         status: SUCCESS,
         data: {
-            user: newUser
+            user: {
+                id: newUser._id,
+                username: newUser.username,
+                email: newUser.email
+            }
         },
-        message: "user logged in",
+        message: "User has been registered successfully",
     })
 });
 /**----------------------------------------

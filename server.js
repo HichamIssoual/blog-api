@@ -10,7 +10,7 @@ const userRouter = require("./routes/users.routes");
 app.use(express.json());
 // CORS: Server says who can get its data.
 app.use(cors());
-// conection with database
+// conection with db
 db();
 // routes 
 app.use("/api/auth", userRouter);
@@ -32,7 +32,7 @@ app.use((error, req, res, next) => {
         code: error.statusCode || 500,
     })
 })
-// server started
+// server has on started
 app.listen(PORT, () => {
     console.log("Server Started on", PORT);
 })
