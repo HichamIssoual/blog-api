@@ -1,6 +1,6 @@
 const Users = require("../model/Users");
 const asynHandler = require("../utils/asyn.handler");
-const ErrorGenrator = require("../utils/error.generator");
+const errorGenerator = require("../utils/error.generator");
 const { ERROR, FAIL, SUCCESS } = require("../utils/status.code.text");
 /**----------------------------------------
  * @access private (only for admin)
@@ -10,11 +10,11 @@ const { ERROR, FAIL, SUCCESS } = require("../utils/status.code.text");
  ------------------------------------------*/
 const getAllUsers = asynHandler(async (req, res, next) => {
     const users = await Users.find().select("-password").select("-__v");
-    res.status(200).json({
+    return res.status(200).json({
         status: SUCCESS,
         users: users,
-    })
+    });
 })
 module.exports = {
     getAllUsers
-}
+};
