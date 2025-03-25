@@ -15,6 +15,29 @@ const getAllUsers = asynHandler(async (req, res, next) => {
         users: users,
     });
 })
+/**----------------------------------------
+ * @access public
+ * @description get user profile
+ * @method GET
+ * @end_point "api/users/profile/:id"
+ ------------------------------------------*/
+const getUserProfile = asynHandler(async (req, res, next) => {
+    // 1. get id of user
+    const userId = req.params.id;
+    // 2. get user by id
+    const user = await Users.findById(userId).select("-password");
+    // 3. check if you have the use user
+    if (!user) {
+        const err = errorGenerator.generate(404, FAIL, "user not found");
+        return next(err);
+    }
+    // 4. return the user response
+    res.status(200).json({
+        status: SUCCESS,
+        user: user
+    })
+})
 module.exports = {
-    getAllUsers
+    getAllUsers,
+    getUserProfile
 };
