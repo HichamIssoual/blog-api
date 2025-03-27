@@ -64,9 +64,13 @@ const login = asynHandler(async (req, res, next) => {
         return next(err);
     }
     // check if user not in db and check if password is right using compare
-    const foundedUser = await Users.findOne({ email });
+    const foundedUser = await Users.findOne({ email: email });
+    if (!foundedUser) {
+        const err = ErrorGenrator.generate(401, FAIL, "email or password is wrong");
+        return next(err);
+    }
     const matchedPassword = await bcrypt.compare(password, foundedUser.password);
-    if (!foundedUser || !matchedPassword) {
+    if (!matchedPassword) {
         const err = ErrorGenrator.generate(401, FAIL, "email or password is wrong");
         return next(err);
     }
